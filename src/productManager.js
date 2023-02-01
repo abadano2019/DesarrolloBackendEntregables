@@ -1,14 +1,12 @@
-// Desafio entregable Nro 2, Programación Backend
-// Tema: manejo de archivos
+// Desafio entregable Nro 4, Programación Backend
+// Tema: Primera preentrega
 // Titular: Ariel Badano
 // CoderHouse
 
+// Manejador de productos
+
 import Product from '../product.js'
 import fs from 'fs'
-
-const path = './productos.json'
-
-
 
 export default class ProductManager {
   
@@ -36,6 +34,81 @@ export default class ProductManager {
     }
 
   }
+
+  dataTypeValidation(title,description,price,thumbnail,code,stock,status, category){
+    
+    if(typeof(title) !== 'string'){
+      return "Title es un campo string"
+    } 
+    
+    if(typeof(description) !== 'string'){
+      return "Description es un campo string"
+    } 
+
+    if(typeof(code) !== 'string'){
+      return "Code es un campo string"
+    } 
+
+    if(typeof(category) !== 'string'){
+      return "Category es un campo string"
+    } 
+    
+    if(typeof(price) !== 'number'){
+      return "Price es un campo numerico"
+    }  
+
+    if(typeof(stock) !== 'number'){
+      return "Stock es un campo numerico"
+    }  
+
+    if(typeof(status) !== 'boolean'){
+      return "status es un campo booleano"
+    }
+    
+    return "ok"
+
+  }
+
+
+  dataTypeValidationUpdate(title,description,price,thumbnails,code,stock,status, category){
+    
+    if(typeof(title) !== 'string' && title !== undefined){
+      return "Title es un campo string"
+    } 
+    
+    if(typeof(description) !== 'string' && description !== undefined){
+      return "Description es un campo string"
+    } 
+
+    if(typeof(code) !== 'string' && code !== undefined){
+      return "Code es un campo string"
+    } 
+
+    if(typeof(category) !== 'string' && category !== undefined){
+      return "Category es un campo string"
+    } 
+    
+    if(typeof(price) !== 'number' && price !== undefined){
+      return "Price es un campo numerico"
+    }  
+
+    if(typeof(stock) !== 'number' && stock !== undefined){
+      return "Stock es un campo numerico"
+    }  
+
+    if(typeof(status) !== 'boolean' && status !== undefined){
+      return "status es un campo booleano"
+    }
+    
+    if(!Array.isArray(thumbnails) && thumbnails !== undefined){
+      return "Thumbnails es un campo que recibe un array"
+    }
+
+
+    return "OK"
+
+  }
+
 
   // Metodo que devuelve la colección de productos almacenada en el archivo que se encuentra en la dirección
   // guardada en el atributo path de la clase. En caso de que el archivo aún no se haya creado devuelve un 
@@ -82,23 +155,33 @@ export default class ProductManager {
   // se valida la no duplicación del campo code con productos ya ingresados a la colección, además de que los
   // campos ingresado existan y no sean vacios. En caso de cumplirse todos los anteriores supuestos el metodo 
   // devuelte una instancia del objete Producto.
-  createProduct(title, description, price, thumbnail, code, stock){
+  createProduct(title, description, price, thumbnails, code, stock, status, category){
+    
+    console.log(thumbnails)   
     // validación de los campos para que no sean undefined, compos obligatorios
-    if((!title) || (!description) || (!price) || (!thumbnail) || (!code) || (!stock)){
-      console.log('Atención: Los campos del productos son obligatorios (title, description, price, thumbnail, code, stock)')
-      return
+    if((!title) || (!description) || (!price) || (!code) || (!stock) || (!status) || (!category) ){
+      console.log('Atención: Los campos del productos son obligatorios (title, description, price, thumbnail, code, stock,category)')
+      return "Atención: Los campos del productos son obligatorios (title, description, price, thumbnail, code, stock,category"
     }
     
     // validación de los campos, se solicita que no sean vacios
-    if(title=='' || description=='' || price =='' || thumbnail == '' || code == '' || stock == ''){
-      console.log('Atención: Verifique los campos a ingresar (title, description, price, thumbnail, code, stock)')
-      return
+    if(title == '' || description=='' || price =='' || code == '' || stock == '' || status == '' || category == ''){
+      console.log('Atención: Verifique los campos a ingresar (title, description, price, thumbnail, code, stock, category)')
+      return "Atención: Verifique los campos a ingresar (title, description, price, thumbnail, code, stock, category)"
     } 
     
     // crear producto 
-    const producto = new Product(title,description,price,thumbnail,code,stock)
+    if(thumbnails === undefined){
+      thumbnails = []
+    }
+    const producto = new Product(title,description,price,thumbnails,code,stock, status, category)
     return producto
 
+  }
+
+  createProductPut(title,description,price,thumbnails,code,stock,status,category){
+    const producto = new Product(title,description,price,thumbnails,code,stock, status, category)
+    return producto
   }
 
   // Metodo que agrega un producto a la colección de productos almacenada en el archivo ubicado en la dirección 
@@ -122,6 +205,7 @@ export default class ProductManager {
           else
           {
             console.log("ATENCION: Verifique el campo Code, el mismo ya existe en otro producto")
+            return "ADDPROD-COD1"
           }
         }
         else
@@ -133,7 +217,8 @@ export default class ProductManager {
       }
         
   }
-        
+
+          
   // Metodo que modifica un producto de la colección de productos almacenada en el archivo ubicado
   // en la dirección del atributo path de la clase, el metodo recibe un id un objeto del tipo Product y actualiza
   // el producto encontrado con los datos del producto pasado por parametro, el cual debe tener todos los campos
@@ -142,24 +227,75 @@ export default class ProductManager {
     console.log(id)
     if (!id){
       console.log("ATENCION: Debe ingresar un id valido")
-      return
+      return "ATENCION: Debe ingresar un id valido"
     }
 
     if(!producto){
       console.log("Atención: no se encuentran los datos de modificación")
+      return "Atención: no se encuentran los datos de modificación"
     }
     else
     {
     
       try{
         const productos = await this.getProducts()
-        const prod = productos.find((product) => product.id === id)
-        prod.title = producto.title
-        prod.description = producto.description
-        prod.price = producto.price
-        prod.thumbnail = producto.thumbnail
-        prod.code = producto.code
-        prod.stock = producto.stock 
+        console.log("buscando a nemo")
+        console.log(productos)        
+        const prod = productos.find((product) => product.id === parseInt(id))
+        
+        if(!prod){
+          console.log("Producto a modificar no existe")
+          return "Producto a modificar no existe"
+        }
+
+        if(this.#validarCode(productos, producto.code)){
+          console.log("Error: Codigo a modificar ya existe en otro producto")
+          return "Error: Codigo a modificar ya existe en otro producto"
+        }
+        
+        console.log(producto.title)
+        prod.title = (producto.title !== "" && producto.title !== undefined ) ? producto.title : prod.title
+        prod.description = (producto.description !== "" && producto.description !== undefined) ? producto.description : prod.description
+        prod.price = (producto.price!=="" && producto.price !== undefined) ? producto.price : prod.price
+        prod.thumbnail = (producto.thumbnail && producto.thumbnail !== undefined ) ? producto.thumbnail : prod.thumbnail
+        prod.code = (producto.code !== "" && producto.code !== undefined) ? producto.code : prod.code
+        prod.stock = (producto.stock !== "" && producto.stock !== undefined) ? producto.stock : prod.stock 
+        prod.status = (producto.status !== "" && producto.status !== undefined) ? producto.status : prod.status
+        prod.category = (producto.category !== "" && producto.category !== undefined) ? producto.category : prod.category
+
+        await fs.promises.writeFile(this.#path,JSON.stringify(productos))
+        console.log("producto modificdo")
+        return "OK"
+      }
+      catch(error) {
+        console.log(error)
+      }
+    }  
+  }
+
+  async updateProductPut(id, title,description,price,thumbnail,code,stock,status ,category){
+
+
+    if (!id){
+      console.log("ATENCION: Debe ingresar un id valido")
+      return
+    }
+    else
+    {
+    
+      try{
+        const productos = await this.getProducts()
+        const prod = productos.filter((product) => product.id === parseInt(id))
+
+        prod.title = title
+        prod.description = (description !== "") ? description : prod.description 
+        prod.price = (price!== "") ? price : prod.price
+        prod.thumbnail = (thumbnail!== "") ? thumbnail : prod.thumbnail
+        prod.code = (code!== "") ? code : prod.code
+        prod.stock = (stock!== "") ? stock : prod.stock
+        prod.status = (status!== "") ? status : prod.status
+        prod.category = (category!== "") ? {category} : prod.category
+
         await fs.promises.writeFile(this.#path,JSON.stringify(productos))
         console.log("producto modificdo")
       }
@@ -179,18 +315,20 @@ export default class ProductManager {
     }
 
     const productoEncontrado = await this.getProductById(id)
+    console.log(productoEncontrado)
     if(!productoEncontrado) { 
+      console.log("No existe producto con el id: " + id)
       return 
     }
     
     try{
       const productos = await this.getProducts()
-      const newProducts = productos.filter((product) => product.id !== id)
+      const newProducts = productos.filter((product) => product.id !== parseInt(id))
       await fs.promises.writeFile(this.#path,JSON.stringify(newProducts))
       console.log("producto eliminado")
     }
     catch(error) {
-      console.log(error)
+      console.log("Me fui por acá" + error)
     }  
 
   }
@@ -202,76 +340,10 @@ export default class ProductManager {
 
   // Metodo privado para la validación del campo code de los productos, no se permite la duplicación.
   #validarCode(productos, newCode) {
-    return productos.find((product) => (product.code === newCode))
+    if(newCode !== undefined){
+      return productos.find((product) => (product.code === newCode))
+    }else{
+    return false
+    }
   }
 }
-
-/*
-//TESTING
-console.log("//////////////////////////////////////////////////////////////////////////////////////////////////")
-console.log("/////  Se ejecuta pruebas sugeridas por la letra del ejercicio junto con otras pruebas  //////////")
-console.log("//////////////////////////////////////////////////////////////////////////////////////////////////")
-console.log("*** Se crea instancia de la clase ProductManager ***")
-const productManager = new ProductManager(path)
-async function testing (){
-  console.log("*** se mestra el contenido de la colección de productos ***")
-  let products = await productManager.getProducts()
-  console.log(products)
-  console.log("*** se carga nuevo producto ***")
-  const prod_1 = productManager.createProduct("producto prueba","Este es un producto prueba","200","sin imagen","abc123","25");
-  await productManager.addProduct(prod_1);
-  console.log("*** se mestra el contenido de la colección de productos ***")
-  console.log("Productos cargados:")
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("*** se carga nuevo producto ***")
-  const prod_2 = productManager.createProduct("producto prueba","Este es un producto prueba","200","sin imagen","abc124","25");
-  await productManager.addProduct(prod_2);
-  console.log("*** se mestra el contenido de la colección de productos ***")
-  console.log("Productos cargados:")
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("*** se carga nuevo producto ***")
-  const prod_3 = productManager.createProduct("producto prueba","Este es un producto prueba","200","sin imagen","abc125","25");
-  await productManager.addProduct(prod_3);
-  console.log("*** se mestra el contenido de la colección de productos ***")
-  console.log("Productos cargados:")
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("*** se buscar producto con id = 1 ***")
-  const prod2 = await productManager.getProductById(1)
-  console.log("encontrado por id")
-  console.log(prod2)
-  console.log("*** se buscar producto con id = 100 (existe?)***")
-  const prod3 = await productManager.getProductById(100)
-  console.log("producto encontrado?:")
-  console.log(prod3)
-
-  console.log("*** Se modifica producto con id = 3 ****")
-  const prodModificado = productManager.createProduct("--Producto Modificado--","Este es un producto","200","sin imagen","abc123Modificado","25");
-  await productManager.updateProduct(3,prodModificado)
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("*** Se elimina el producto con id = 1***")
-  await productManager.deleteProduct(1)
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("*** Se elimina el producto con id = 20 (no existe)***")
-  console.log("se encontró el producto?:")
-  await productManager.deleteProduct(20)
-  products = await productManager.getProducts()
-  console.log(products)
-
-  console.log("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
-  console.log("Nota: si se vuelve a ejecutar el codigo se cargarán los datos del producto con id 1 borrado con")
-  console.log("otro id y los datos del producto con id 3 antes de ser modificado con otro id ya que en la midificación")
-  console.log("el campo code se cambió por otro valor")
-  console.log("/////////////////////////////////////////////////////////////////////////////////////////////////////////")
-}
-
-testing()*/

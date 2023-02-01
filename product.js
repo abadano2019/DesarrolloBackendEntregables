@@ -9,14 +9,18 @@ export default class Product {
     thumbnail
     code
     stock
+    status
+    category
   
-    constructor(title, description, price, thumbnail, code, stock){
+    constructor(title, description, price, thumbnail, code, stock, status = true, category){
       this.title = title
       this.description = description
       this.price = price
       this.thumbnail = thumbnail
       this.code = code
       this.stock = stock
+      this.status = status
+      this.category = category
     }
   
   }
