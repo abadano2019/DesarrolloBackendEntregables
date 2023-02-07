@@ -2,6 +2,7 @@
 // id generado. También es usada para la modificación de datos, se deberá crear la instancia tal cual existe en 
 // la colección de productos con los campos que se desean modificar, puede ser uno o todos, la modificacón se 
 // realizará por id.
+
 export default class Product {
     title
     description

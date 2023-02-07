@@ -1,5 +1,6 @@
-import ProductManager from '../src/productManager.js'
+import ProductManager from '../productManager.js'
 import { Router } from "express";
+import { socketServer } from '../app.js';
 import { upload } from '../middlewares/multer.js';
 
 const router = Router();
@@ -48,7 +49,7 @@ router.get('/:idProduct', async(req,res) => {
     }
 })
 
-
+// alta de producto
 router.post('/', async(req,res) => {
     
     try{
@@ -67,6 +68,9 @@ router.post('/', async(req,res) => {
                 res.json({mesage:'ATENCION: Verifique el campo Code, el mismo ya existe en otro producto'})    
             }
             else{
+                
+                const products = await productManager.getProducts()
+                socketServer.emit("producto agregado",{products})
                 res.json({mesage:'Producto agregado',product})
             }
         }else{
@@ -80,6 +84,7 @@ router.post('/', async(req,res) => {
     }
 })
 
+// modificación de producto
 router.put('/:idProduct', async(req,res) => {
 
     try{
@@ -114,6 +119,7 @@ router.put('/:idProduct', async(req,res) => {
     }    
 })
 
+// eliminación de producto
 router.delete('/:idProduct', async(req,res) => {
 
     const {idProduct} = req.params
@@ -124,6 +130,8 @@ router.delete('/:idProduct', async(req,res) => {
         
         if(product){
             productManager.deleteProduct(idProduct)
+            const products = productManager.getProducts()
+            socketServer.emit("producto eliminado",{products})
             res.json({mesage:'Producto eliminado',product})
         } else {
             res.json({mesage:'Producto no encontrado'})
@@ -135,6 +143,7 @@ router.delete('/:idProduct', async(req,res) => {
     }
     
 })
+
 
 
 export default router

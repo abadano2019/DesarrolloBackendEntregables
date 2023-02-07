@@ -5,8 +5,8 @@
 
 // Manejador de carritos
 
-import Cart from '../cart.js'
-import CartProduct from '../cartProduct.js'
+import Cart from '../src/cart.js'
+import CartProduct from '../src/cartProduct.js'
 import fs from 'fs'
 
 export default class cartManager {

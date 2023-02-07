@@ -5,7 +5,7 @@
 
 // Manejador de productos
 
-import Product from '../product.js'
+import Product from '../src/product.js'
 import fs from 'fs'
 
 export default class ProductManager {

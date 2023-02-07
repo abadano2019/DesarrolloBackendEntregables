@@ -1,7 +1,5 @@
-import Cart from '../cartProduct.js'
-import CartManager from '../src/CartManager.js'
-import CartProduct from '../cartProduct.js'
-import ProductManager from '../src/productManager.js'
+import CartManager from '../cartManager.js'
+import ProductManager from '../productManager.js'
 import { Router } from "express";
 import { upload } from '../middlewares/multer.js';
 
@@ -34,7 +32,7 @@ router.get('/', async(req,res) => {
     }
 })
 
-// Busqueda de producto por id
+// Busqueda de productos por id de carrito
 router.get('/:idCart', async(req,res) => {
 
     try{

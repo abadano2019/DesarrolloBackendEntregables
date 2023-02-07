@@ -1,4 +1,4 @@
-// Clase para generar las instancias de los carritos
+// Clase para generar instancias de los carritos
 
 export default class Cart {
     id
