@@ -1,10 +1,7 @@
-import ProductManager from '../productManager.js'
 import {Router} from 'express'
+import { productManager } from './products.router.js'
 
 const router = new Router()
-const path = './productos.json'
-const productManager = new ProductManager(path)
-
 
 // Vista para ser utilizada con protocalo http, layout home,
 router.get('/',async(req,res) =>{

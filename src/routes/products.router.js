@@ -6,7 +6,7 @@ import { upload } from '../middlewares/multer.js';
 const router = Router();
 
 const path = './productos.json'
-const productManager = new ProductManager(path)
+export const productManager = new ProductManager(path)
 
 // Busqueda de todos los productos y busqueda de productos filtrando por un limite pasado por query
 router.get('/', async(req,res) => {
@@ -70,7 +70,7 @@ router.post('/', async(req,res) => {
             else{
                 
                 const products = await productManager.getProducts()
-                socketServer.emit("producto agregado",{products})
+                socketServer.emit("productoAgregado",{products})
                 res.json({mesage:'Producto agregado',product})
             }
         }else{
@@ -130,8 +130,8 @@ router.delete('/:idProduct', async(req,res) => {
         
         if(product){
             productManager.deleteProduct(idProduct)
-            const products = productManager.getProducts()
-            socketServer.emit("producto eliminado",{products})
+            const products = await productManager.getProducts()
+            socketServer.emit("productoEliminado",{products})
             res.json({mesage:'Producto eliminado',product})
         } else {
             res.json({mesage:'Producto no encontrado'})

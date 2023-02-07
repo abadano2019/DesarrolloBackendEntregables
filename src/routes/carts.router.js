@@ -1,14 +1,13 @@
 import CartManager from '../cartManager.js'
-import ProductManager from '../productManager.js'
 import { Router } from "express";
+import { productManager } from './products.router.js';
 import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
 const path = './carts.json'
-const pathProducts = './productos.json'
 const cartManager = new CartManager(path)
-const productManager = new ProductManager(pathProducts)
+
 
 // Busqueda de todos los productos y busqueda de productos filtrando por un limite pasado por query
 router.get('/', async(req,res) => {

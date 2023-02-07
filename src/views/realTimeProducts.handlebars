@@ -11,15 +11,23 @@
 <script>
     const socketClient = io()
     
-    socketClient.on("producto agregado",(products)=>{
-        console.log("Se Agregó un producto")
-        console.log(products.products)
-        window.location.reload()
+    socketClient.on("productoAgregado",(products)=>{
+        try{
+            console.log("Se Agregó un producto")
+            //console.log(products.products)
+            window.location.reload()
+        }catch(error){
+            console.log(error)
+        }
     })
 
-    socketClient.on("producto eliminado",(products)=>{
-        console.log("Se elimino un producto")
-        console.log(products.products)
-        window.location.reload()
+    socketClient.on("productoEliminado",(products)=>{
+        try{
+            console.log("Se elimino un producto")
+            //console.log(products.products)
+            window.location.reload()
+        }catch(error){
+            console.log(error)
+        }
     })
 </script>
