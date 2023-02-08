@@ -9,6 +9,7 @@ import { __dirname } from '../src/utils.js'
 import cartsRouters from './routes/carts.router.js'
 import express from 'express'
 import handlebars from 'express-handlebars'
+import { productManager } from './routes/products.router.js'
 import productsRouters from './routes/products.router.js'
 import viewsRouter from './routes/views.router.js'
 
@@ -41,4 +42,35 @@ socketServer.on('connection',(socket)=>{
         console.log('Uusario desconectado');
     })
 
+    socket.on('addProduct', async({title, description, price, code,stock,status,category})=>{
+        
+        try{
+            const thumbnails = []   
+            const validation = productManager.dataTypeValidation(title, description, parseInt(price),thumbnails,code,parseInt(stock), Boolean(status),category )
+            if (validation === "ok"){        
+                const product = productManager.createProduct(title,description,price,thumbnails,code,stock,status, category)
+                if(typeof(product) === 'string')
+                {
+                    return "Validation product: " + product
+                }
+                const cod = await productManager.addProduct(product)
+                
+                if (cod === "ADDPROD-COD1"){
+                    console.log({mesage:'ATENCION: Verifique el campo Code, el mismo ya existe en otro producto'})    
+                }
+                else{
+                    
+                    const products = await productManager.getProducts()
+                    socketServer.emit("productoAgregado",{products})
+                    console.log({mesage:'Producto agregado',product})
+                }
+            }else{
+                console.log({mesage:'Error: ', validation})
+            }
+        }
+        catch(error){
+            console.log("CODIGO ADDPROD: CONTACTAR AL ADMINISTRADOR DEL SITIO")
+            console.log("LOG: " + error)
+        }
+    })
 })
